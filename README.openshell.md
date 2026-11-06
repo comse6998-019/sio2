@@ -200,7 +200,7 @@ temperature = 0.0
 
 Replace `YOUR_MODEL_ID` with the identifier your server accepts (sol, luna, whatever else), but keep the scan, budget, and agent sections unchanged.
 
-`model.host` selects the endpoint for either supported client. `api_key_var` names the credential environment variable, not its secret value.
+`LOCAL_MODEL_URL` overrides `model.host` for either supported client. `api_key_var` names the credential environment variable, not its secret value.
 
 Under OpenShell, that name must match an alias in the provider profile's `env_vars` list. The proxy substitutes the real credential only for an authorized endpoint.
 
@@ -387,6 +387,7 @@ The effective policy should include the model-access rule contributed by sio2-lo
 openshell sandbox exec sio2-sandbox \
     --workspace default \
     --no-login-shell \
+    --env LOCAL_MODEL_URL=http://host.lima.internal:8080 \
     -- /opt/sio2/.venv/bin/sio2 \
       --input /inputs/target \
       --config /inputs/config.toml \
@@ -404,3 +405,35 @@ openshell policy get sio2-sandbox --workspace default --full
 ```
 
 Notice how the allowed local endpoint is `host.lima.internal:8080` and no rule permits api.openai.com. This means that if you try to point to the OpenAI API, the sandbox will block the network request according to the effective policy.
+
+Let's rerun point to api.openai.com and observe the behavior.
+
+```shell
+openshell sandbox exec sio2-sandbox \
+    --workspace default \
+    --no-login-shell \
+    --env LOCAL_MODEL_URL=https://api.openai.com \
+    -- /opt/sio2/.venv/bin/sio2 \
+      --input /inputs/target \
+      --config /inputs/config.toml \
+      --output /sandbox/runs/scan-001
+```
+
+And when you see the logs, you should notice that the network request to `api.openai.com` is blocked.
+
+```shell
+openshell logs sio2-sandbox --workspace default --tail
+```
+
+You'll see
+
+```logs
+[1793988034.984] [sandbox] [OCSF ] [ocsf] NET:OPEN [MED] DENIED /usr/local/bin/python3.12(0) -> api.openai.com:443 [reason:transparent_tcp_policy_denied]
+[1793988035.223] [sandbox] [OCSF ] [ocsf] NET:REFUSE [MED] DENIED api.openai.com [reason:policy_dns_ineligible]
+[1793988035.223] [sandbox] [OCSF ] [ocsf] CONFIG:OBSERVATION [INFO] Policy DNS staged unapproved name api.openai.com synthetic=198.18.0.3 for TCP policy review
+[1793988035.225] [sandbox] [WARN ] [openshell_supervisor_network::proxy] Denied staged transparent connection destination=198.18.0.3:443 reason=endpoint api.openai.com:443 is not allowed by any policy
+[1793988035.225] [sandbox] [OCSF ] [ocsf] NET:OPEN [MED] DENIED /usr/local/bin/python3.12(0) -> api.openai.com:443 [reason:transparent_tcp_policy_denied]
+[1793988035.509] [sandbox] [OCSF ] [ocsf] EVENT [INFO] ssh relay closed (channel_id=b787f292-815d-493a-a58b-42fab84af6d5, target=unix:/run/openshell/ssh.sock)
+[1793988044.256] [gateway] [INFO ] [openshell_server::grpc::policy] SubmitPolicyAnalysis: persisted draft chunks
+[1793988044.295] [sandbox] [INFO ] [openshell_supervisor] Flushed denial analysis to gateway proposals=1 sandbox_name=sio2-sandbox summaries=1
+```
