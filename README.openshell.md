@@ -200,7 +200,7 @@ temperature = 0.0
 
 Replace `YOUR_MODEL_ID` with the identifier your server accepts (sol, luna, whatever else), but keep the scan, budget, and agent sections unchanged.
 
-`LOCAL_MODEL_URL` overrides `model.host` for either supported client. `api_key_var` names the credential environment variable, not its secret value.
+`model.host` selects the endpoint for either supported client. `api_key_var` names the credential environment variable, not its secret value.
 
 Under OpenShell, that name must match an alias in the provider profile's `env_vars` list. The proxy substitutes the real credential only for an authorized endpoint.
 
@@ -387,7 +387,6 @@ The effective policy should include the model-access rule contributed by sio2-lo
 openshell sandbox exec sio2-sandbox \
     --workspace default \
     --no-login-shell \
-    --env LOCAL_MODEL_URL=http://host.lima.internal:8080 \
     -- /opt/sio2/.venv/bin/sio2 \
       --input /inputs/target \
       --config /inputs/config.toml \
