@@ -1,0 +1,28 @@
+# Low budget: runs out partway through Radicale (10 alerts), so later rows are budget_exhausted.
+# For another target, replace [scan] with its block from briefs/scan/ and keep the rest.
+[scan]
+paths = ["testcode/BenchmarkTest000*.py"]
+exclude = []
+min_severity = "MEDIUM"
+bandit_version = "1.9.4"
+
+[model]
+provider = "ollama"
+name = "qwen3.8"
+host = "http://localhost:11434"
+api_key_var = "LOCAL_MODEL_KEY"   # Name of the credential environment variable
+temperature = 0.0
+seed = 0
+num_ctx = 16384
+think = false
+
+[budget]
+max_tokens = 15000
+output_allowance = 1024
+max_steps = 600
+
+[agent]
+max_turns_per_alert = 8
+submit_only_turns = 2
+no_progress_limit = 3
+context_lines = 20

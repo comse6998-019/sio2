@@ -1,0 +1,30 @@
+[project]
+name = "sio2"
+version = "0.1.0"
+description = "A bounded agent that scans a pinned Python repository with Bandit and labels each alert (COMS E6998-019 HW1)"
+readme = "README.md"
+authors = [
+    { name = "Rahul Krishna", email = "i.m.ralk@gmail.com" }
+]
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "bandit==1.9.4",
+    "httpx>=0.28.1",
+    "jsonschema>=4.26.0",
+    "langgraph>=1.2.15",
+]
+
+[project.scripts]
+sio2 = "sio2:main"
+
+[build-system]
+requires = ["uv_build>=0.12.18,<0.13.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

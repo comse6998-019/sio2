@@ -1,0 +1,62 @@
+sequenceDiagram
+    participant M as Classifier (model)
+    participant R as Runtime
+    participant W as Workspace (copy)
+    Note over M,W: radicale-radicale-storage-multifilesystem-history-py-53-B301
+    Note over R: t+0s s271 next_alert
+    R->>R: t+0s s272 read_file('path': 'radicale/storage/multifilesystem/history.py', 'start_line': …)
+    R->>W: read_file
+    R-->>M: t+0s s273 observation ok (2466 chars)
+    R->>R: t+0s s274 route gate (by runtime) 
+    R->>R: t+0s s275 route classify (by runtime) remaining=425611 required=3754
+    Note over M: t+17s s276 model_call in=2189 out=59
+    M->>R: t+17s s277 route tools (by model) calls=search,search
+    M->>R: t+17s s278 search('pattern': 'def _get_collection_cache_subfolder')
+    R->>W: search
+    R-->>M: t+17s s279 observation ok (209 chars)
+    M->>R: t+17s s280 search('pattern': 'def _atomic_write')
+    R->>W: search
+    R-->>M: t+17s s281 observation ok (167 chars)
+    R->>R: t+17s s282 route gate (by runtime) 
+    R->>R: t+17s s283 route classify (by runtime) remaining=423363 required=4031
+    Note over M: t+26s s284 model_call in=2413 out=62
+    M->>R: t+26s s285 route tools (by model) calls=read_file
+    M->>R: t+26s s286 read_file('path': 'radicale/storage/multifilesystem/base.py', 'start_line': 110…)
+    R->>W: read_file
+    R-->>M: t+26s s287 observation ok (1971 chars)
+    R->>R: t+26s s288 route gate (by runtime) 
+    R->>R: t+26s s289 route classify (by runtime) remaining=420888 required=4826
+    Note over M: t+37s s290 model_call in=3099 out=28
+    M->>R: t+37s s291 route tools (by model) calls=search
+    M->>R: t+37s s292 search('pattern': '_update_history_etag')
+    R->>W: search
+    R-->>M: t+37s s293 observation ok (627 chars)
+    R->>R: t+37s s294 route gate (by runtime) 
+    R->>R: t+37s s295 route classify (by runtime) remaining=417761 required=5137
+    Note over M: t+46s s296 model_call in=3358 out=61
+    M->>R: t+46s s297 route tools (by model) calls=read_file
+    M->>R: t+46s s298 read_file('path': 'radicale/storage/multifilesystem/sync.py', 'start_line': 40,…)
+    R->>W: read_file
+    R-->>M: t+46s s299 observation ok (1809 chars)
+    R->>R: t+46s s300 route gate (by runtime) 
+    R->>R: t+46s s301 route classify (by runtime) remaining=414342 required=5876
+    Note over M: t+60s s302 model_call in=3978 out=60
+    M->>R: t+60s s303 route tools (by model) calls=read_file
+    M->>R: t+60s s304 read_file('path': 'radicale/storage/multifilesystem/upload.py', 'start_line': 4…)
+    R->>W: read_file
+    R-->>M: t+60s s305 observation ok (2235 chars)
+    R->>R: t+60s s306 route gate (by runtime) 
+    R->>R: t+60s s307 route classify (by runtime) remaining=410304 required=6758
+    Note over M: t+72s s308 model_call in=4698 out=31
+    M->>R: t+72s s309 route tools (by model) calls=search
+    M->>R: t+72s s310 search('pattern': 'def is_safe_filesystem_path_component')
+    R->>W: search
+    R-->>M: t+72s s311 observation ok (175 chars)
+    R->>R: t+72s s312 route gate (by runtime) 
+    R->>R: t+72s s313 route classify (by runtime) remaining=405575 required=6552
+    Note over M: t+188s s314 model_call in=4562 out=356
+    M->>R: t+188s s315 route submit (by model) calls=submit_label
+    M->>R: t+188s s316 submit_label('label': 1, 'rationale': 'Line 53 deserializes a pickle file whose pa…)
+    R-->>M: t+188s s317 observation ok (8 chars)
+    R->>R: t+188s s318 route settle (by runtime) 
+    Note over R: t+188s s319 settle: classified, label=1

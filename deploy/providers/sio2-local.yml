@@ -1,0 +1,27 @@
+id: sio2-local
+display_name: Sio2 Local llama.cpp inference server
+description: OpenAI-compatible endpoint for the sio2 Python client
+category: inference
+inference_capable: true
+
+credentials:
+    - name: api_key
+      description: Optional model server token
+      env_vars: [LOCAL_MODEL_KEY]
+      required: false
+      auth_style: bearer
+      header_name: authorization
+
+discovery:
+    credentials: [api_key]
+
+endpoints:
+    - host: host.lima.internal   # Docker resolves host.lima.internal to 192.168.5.2.
+      port: 8080
+      protocol: rest
+      access: read-write
+      enforcement: enforce
+      allowed_ips: ["192.168.5.2/32"]
+
+binaries:
+    - /usr/local/bin/python3.12   # Python in the sio2 image resolves to /usr/local/bin/python3.12

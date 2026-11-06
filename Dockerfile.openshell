@@ -1,0 +1,47 @@
+# syntax=docker/dockerfile:1
+# Build from the sio2 repository root. Supply target source at runtime.
+ARG PYTHON_IMAGE=python:3.12-slim@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1
+FROM ${PYTHON_IMAGE}
+
+ARG UV_VERSION=0.12.18
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    UV_PYTHON_DOWNLOADS=never \
+    UV_LINK_MODE=copy \
+    PATH="/opt/sio2/.venv/bin:${PATH}"
+
+# OpenShell needs iproute2 for network namespaces. nftables supports denial evidence.
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends ca-certificates git iproute2 nftables \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN python -m pip install --no-cache-dir "uv==${UV_VERSION}"
+
+WORKDIR /opt/sio2
+COPY pyproject.toml uv.lock README.md ./
+COPY src/ ./src/
+COPY schemas/ ./schemas/
+COPY configs/ ./configs/
+
+# Preserve repository-relative schema paths through an editable install.
+# Keep the target's dependencies separate from sio2's environment.
+RUN uv sync --frozen --group dev \
+    && uv cache clean \
+    && bandit --version
+
+# Trust only the designated runtime mount for source-commit identification.
+RUN git config --system --add safe.directory /inputs/target
+
+# OpenShell drops agent subprocesses to the image's non-root identity.
+RUN groupadd --gid 1500 agent \
+    && useradd --uid 1500 --gid agent --create-home agent
+
+RUN mkdir -p /inputs/target \
+    && install -d -o agent -g agent /sandbox /sandbox/runs
+
+USER agent:agent
+WORKDIR /sandbox
+
+# OpenShell replaces CMD. Pass the workflow command after -- at sandbox creation.
+CMD ["sio2", "--help"]

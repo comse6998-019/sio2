@@ -1,0 +1,12 @@
+# Allow only agent build inputs. Exclude targets, runs, credentials, and local environments.
+**
+!Dockerfile.openshell
+!pyproject.toml
+!uv.lock
+!README.md
+!src/
+!src/**
+!schemas/
+!schemas/**
+!configs/
+!configs/**
