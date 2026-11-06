@@ -55,7 +55,7 @@ class OllamaChat:
     def __init__(self, model: Model, output_allowance: int):
         self.model = model
         self.output_allowance = output_allowance
-        self.host = model.host.rstrip("/")
+        self.host = os.environ.get("LOCAL_MODEL_URL", model.host).rstrip("/")
         if not self.host.startswith("http"):
             self.host = "http://" + self.host
         self._client = httpx.Client(timeout=model.timeout_s)
@@ -127,12 +127,12 @@ def _wire_messages(messages: list[dict]) -> list[dict]:
 
 class OpenAIChat:
     """An OpenAI-compatible server: POST {host}/v1/chat/completions. Usage comes from usage.prompt_tokens and
-    usage.completion_tokens. The output allowance is sent as max_tokens. The TOML model.host selects the endpoint.
+    usage.completion_tokens. The output allowance is sent as max_tokens. LOCAL_MODEL_URL overrides the TOML model.host endpoint.
     The agent's history is in Ollama's shape and is rewritten to OpenAI's on the way out (_wire_messages)."""
 
     def __init__(self, model: Model, output_allowance: int):
         self.model, self.output_allowance = model, output_allowance
-        self.host = model.host.rstrip("/")
+        self.host = os.environ.get("LOCAL_MODEL_URL", model.host).rstrip("/")
         self._client = None
 
     def __enter__(self) -> "OpenAIChat":

@@ -59,7 +59,7 @@ class Scan:
 class Model:
     provider: str
     name: str
-    host: str             # server base URL from the TOML configuration
+    host: str             # server base URL, optionally overridden by LOCAL_MODEL_URL
     temperature: float
     seed: int
     num_ctx: int          # context window we ask Ollama for

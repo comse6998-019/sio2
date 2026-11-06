@@ -21,12 +21,19 @@ def model_config(tmp_path, provider, extra=""):
     return load_config(path)
 
 
+@pytest.mark.parametrize("override,host", [
+    (None, "http://configured.example:8080"),
+    ("http://override.example:8080/", "http://override.example:8080"),
+])
 @pytest.mark.parametrize("provider,path", [
     ("ollama", "/api/chat"),
     ("openai-compatible", "/v1/chat/completions"),
 ])
-def test_toml_host_controls_requests_despite_environment_overrides(tmp_path, monkeypatch, provider, path):
-    monkeypatch.setenv("LOCAL_MODEL_URL", "http://approved.example:8080/")
+def test_endpoint_uses_optional_environment_override(tmp_path, monkeypatch, provider, path, override, host):
+    if override is None:
+        monkeypatch.delenv("LOCAL_MODEL_URL", raising=False)
+    else:
+        monkeypatch.setenv("LOCAL_MODEL_URL", override)
     monkeypatch.setenv("OLLAMA_HOST", "http://legacy.example:11434")
     requests = []
 
@@ -48,7 +55,7 @@ def test_toml_host_controls_requests_despite_environment_overrides(tmp_path, mon
     cfg = load_config(config_path)
     with model_client(cfg) as client:
         client.chat([{"role": "user", "content": "test"}], [])
-    assert requests == ["http://configured.example:8080" + path]
+    assert requests == [host + path]
 
 
 @pytest.mark.parametrize("provider", ["ollama", "openai-compatible"])

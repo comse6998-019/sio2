@@ -69,7 +69,8 @@ git -C targets/sglang checkout bbe9c7eeb520b0a67e92d133dfc137a3688dc7f2
 
 **Model environment variables:**
 
-- TOML `model.host` selects the endpoint for either client. For OpenAI-compatible endpoints, supply the base URL without `/v1`.
+- TOML `model.host` supplies the default endpoint for either client. Set `LOCAL_MODEL_URL` to override it externally.
+  For OpenAI-compatible endpoints, supply the base URL without `/v1`.
 - `model.api_key_var` selects the environment variable that supplies the bearer token. It defaults to `LOCAL_MODEL_KEY`.
 - To use another variable, set `api_key_var = "MY_PROVIDER_API_KEY"`. Store only the variable name in TOML, never the credential value.
 

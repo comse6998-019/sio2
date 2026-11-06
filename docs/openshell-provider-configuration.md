@@ -14,7 +14,8 @@ The local CLI reports OpenShell 0.1.7. A candidate profile passed `openshell pro
 
 | Setting | Responsibility |
 |---|---|
-| sio2 TOML `[model]` | Choose the request destination and model |
+| sio2 TOML `[model]` | Choose the default request destination and model |
+| `LOCAL_MODEL_URL` | Optionally override the request destination |
 | Provider profile | Authorize the host, port, and Python executable |
 | Provider instance | Attach profile configuration and optional credentials to a sandbox |
 
